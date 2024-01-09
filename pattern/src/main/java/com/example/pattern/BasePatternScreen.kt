@@ -18,6 +18,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -48,7 +49,6 @@ data class BasePatternDrawingUiState(
         }
 
     companion object {
-//        internal val DOT_RADIUS = 10.dp
         internal const val DOT_SIZE = 3
         internal const val LINE_STROKE_WIDTH = 9f
         internal const val VIBRATOR_MILLS = 20L
@@ -61,9 +61,10 @@ fun ColumnScope.BasePatternScreen(
     modifier: Modifier = Modifier,
     context: Context = LocalContext.current,
     dotSize: Dp = 10.dp,
+    lineWidth: Dp = 10.dp,
+    lineColor: Color = colorResource(id = R.color.line),
     selectedDotColor: Color = colorResource(id = R.color.selected_dot),
     unselectedDotColor: Color = colorResource(id = R.color.unselected_dot),
-    lineColor: Color = colorResource(id = R.color.line),
     minimumLineConnectionCount: Int = 2,
     onLessCountPatternSelected: (Int) -> Unit,
     onPatternSuccessfullySelected: (String) -> Unit) {
@@ -85,7 +86,8 @@ fun ColumnScope.BasePatternScreen(
 
                             repeat(BasePatternDrawingUiState.DOT_SIZE) { rowIndex ->
                                 repeat(BasePatternDrawingUiState.DOT_SIZE) { colIndex ->
-                                    val dotOffset = uiState.threeByThreeDotOffsets[rowIndex][colIndex]
+                                    val dotOffset =
+                                        uiState.threeByThreeDotOffsets[rowIndex][colIndex]
                                     if (firstTabOffset.is80DpCloserThan(dotOffset)) {
 
                                         CommonUtil.vibrate(
@@ -217,7 +219,7 @@ fun ColumnScope.BasePatternScreen(
                         color = lineColor,
                         start = uiState.latestSelectedDotOffset,
                         end = uiState.draggingOffset,
-                        strokeWidth = BasePatternDrawingUiState.LINE_STROKE_WIDTH
+                        strokeWidth = convertDpToPx(context = context, dp = lineWidth)
                     )
                 }
             },
@@ -261,7 +263,7 @@ fun ColumnScope.BasePatternScreen(
                         color = lineColor,
                         start = uiState.lineOffsets[lineIndex].first,
                         end = uiState.lineOffsets[lineIndex].second,
-                        strokeWidth = BasePatternDrawingUiState.LINE_STROKE_WIDTH
+                        strokeWidth = convertDpToPx(context = context, dp = lineWidth)
                     )
                 }
             }
@@ -306,4 +308,9 @@ private fun savePassword(
             password = currentUiState.password.apply { add(password) }
         )
     )
+}
+
+private fun convertDpToPx(context: Context, dp: Dp): Float {
+    val density = context.resources.displayMetrics.density
+    return dp.value * density
 }
