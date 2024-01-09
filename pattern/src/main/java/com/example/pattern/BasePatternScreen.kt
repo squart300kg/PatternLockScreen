@@ -6,9 +6,10 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -66,7 +67,7 @@ fun ColumnScope.BasePatternScreen(
     onLessCountPatternSelected: (Int) -> Unit,
     onPatternSuccessfullySelected: (String) -> Unit) {
 
-    val basePatternDrawingUiState = remember { mutableStateOf( BasePatternDrawingUiState()) }
+    var uiState by remember { mutableStateOf(BasePatternDrawingUiState()) }
 
     Canvas(
         modifier = modifier
@@ -84,11 +85,8 @@ fun ColumnScope.BasePatternScreen(
                             repeat(BasePatternDrawingUiState.DOT_SIZE) { rowIndex ->
                                 repeat(BasePatternDrawingUiState.DOT_SIZE) { colIndex ->
                                     val dotOffset =
-                                        basePatternDrawingUiState.value.threeByThreeDotOffsets[rowIndex][colIndex]
-                                    if (firstTabOffset.is80DpCloserThan(
-                                            dotOffset
-                                        )
-                                    ) {
+                                        uiState.threeByThreeDotOffsets[rowIndex][colIndex]
+                                    if (firstTabOffset.is80DpCloserThan(dotOffset)) {
 
                                         CommonUtil.vibrate(
                                             context,
@@ -98,16 +96,14 @@ fun ColumnScope.BasePatternScreen(
                                             x = dotOffset.x,
                                             y = dotOffset.y
                                         ).let { firstSelectedOffset ->
-                                            basePatternDrawingUiState.value =
-                                                basePatternDrawingUiState.value.copy(
-                                                    selectedOffsets = basePatternDrawingUiState.value.selectedOffsets.apply {
-                                                        add(
-                                                            element = firstSelectedOffset
-                                                        )
+                                            uiState =
+                                                uiState.copy(
+                                                    selectedOffsets = uiState.selectedOffsets.apply {
+                                                        add(firstSelectedOffset)
                                                     },
                                                     latestSelectedDotOffset = firstSelectedOffset,
                                                     draggingOffset = firstSelectedOffset,
-                                                    password = basePatternDrawingUiState.value.password.apply {
+                                                    password = uiState.password.apply {
                                                         add(
                                                             element = getPasswordByDotOffsetIndex(
                                                                 rowIndex = rowIndex,
@@ -123,8 +119,8 @@ fun ColumnScope.BasePatternScreen(
                         }
 
                         MotionEvent.ACTION_MOVE -> {
-                            basePatternDrawingUiState.value =
-                                basePatternDrawingUiState.value.copy(
+                            uiState =
+                                uiState.copy(
                                     draggingOffset = Offset(
                                         x = motionEvent.x,
                                         y = motionEvent.y
@@ -134,22 +130,16 @@ fun ColumnScope.BasePatternScreen(
                             repeat(BasePatternDrawingUiState.DOT_SIZE) { rowDotIndex ->
                                 repeat(BasePatternDrawingUiState.DOT_SIZE) { colDotIndex ->
                                     val dotOffset =
-                                        basePatternDrawingUiState.value.threeByThreeDotOffsets[rowDotIndex][colDotIndex]
+                                        uiState.threeByThreeDotOffsets[rowDotIndex][colDotIndex]
 
-                                    if (basePatternDrawingUiState.value.draggingOffset.is80DpCloserThan(
-                                            dotOffset
-                                        )
-                                    ) {
+                                    if (uiState.draggingOffset.is80DpCloserThan(dotOffset)) {
 
-                                        if (!basePatternDrawingUiState.value.selectedOffsets.contains(
-                                                dotOffset
-                                            )
-                                        ) {
+                                        if (!uiState.selectedOffsets.contains(dotOffset)) {
 
                                             SkipDotChecker(
                                                 rowDotIndex = rowDotIndex,
                                                 colDotIndex = colDotIndex,
-                                                targetUiModel = basePatternDrawingUiState
+                                                targetUiModel = uiState
                                             ).run {
                                                 if (isSkippedMiddleDot()) {
                                                     if (isMiddleDotNotSelected()) {
@@ -157,11 +147,19 @@ fun ColumnScope.BasePatternScreen(
                                                             context,
                                                             BasePatternDrawingUiState.VIBRATOR_MILLS
                                                         )
-                                                        basePatternDrawingUiState.drawDotAndLine(
-                                                            destinationOffset = middleOffset
+                                                        drawDotAndLine(
+                                                            currentUiState = uiState,
+                                                            destinationOffset = middleOffset,
+                                                            onDrawSuccess = { newUiState ->
+                                                                uiState = newUiState
+                                                            }
                                                         )
-                                                        basePatternDrawingUiState.savePassword(
-                                                            password
+                                                        savePassword(
+                                                            currentUiState = uiState,
+                                                            password = password,
+                                                            onDrawSuccess = { newUiState ->
+                                                                uiState = newUiState
+                                                            }
                                                         )
                                                     }
                                                 }
@@ -171,24 +169,33 @@ fun ColumnScope.BasePatternScreen(
                                                 context,
                                                 BasePatternDrawingUiState.VIBRATOR_MILLS
                                             )
-                                            basePatternDrawingUiState.drawDotAndLine(
-                                                destinationOffset = dotOffset
+                                            drawDotAndLine(
+                                                currentUiState = uiState,
+                                                destinationOffset = dotOffset,
+                                                onDrawSuccess = { newUiState ->
+                                                    uiState = newUiState
+                                                }
                                             )
-                                            basePatternDrawingUiState.savePassword(
-                                                getPasswordByDotOffsetIndex(
+                                            savePassword(
+                                                currentUiState = uiState,
+                                                password = getPasswordByDotOffsetIndex(
                                                     rowIndex = rowDotIndex,
                                                     colIndex = colDotIndex
-                                                )
+                                                ),
+                                                onDrawSuccess = { newUiState ->
+                                                    uiState = newUiState
+                                                }
                                             )
                                         }
                                     }
                                 }
                             }
                         }
+
                         MotionEvent.ACTION_UP -> {
-                            if (basePatternDrawingUiState.value.selectedOffsets.size >= minimumLineConnectionCount + 1) {
+                            if (uiState.selectedOffsets.size >= minimumLineConnectionCount + 1) {
                                 onPatternSuccessfullySelected(
-                                    basePatternDrawingUiState.value.password
+                                    uiState.password
                                         .toMutableList()
                                         .joinToString("")
                                 )
@@ -196,8 +203,7 @@ fun ColumnScope.BasePatternScreen(
                                 onLessCountPatternSelected(minimumLineConnectionCount)
                             }
 
-                            basePatternDrawingUiState.value =
-                                BasePatternDrawingUiState()
+                            uiState = BasePatternDrawingUiState()
 
                         }
                     }
@@ -206,11 +212,11 @@ fun ColumnScope.BasePatternScreen(
             )
             .drawWithContent {
                 drawContent()
-                if (basePatternDrawingUiState.value.latestSelectedDotOffset != Offset.Zero) {
+                if (uiState.latestSelectedDotOffset != Offset.Zero) {
                     drawLine(
                         color = lineColor,
-                        start = basePatternDrawingUiState.value.latestSelectedDotOffset,
-                        end = basePatternDrawingUiState.value.draggingOffset,
+                        start = uiState.latestSelectedDotOffset,
+                        end = uiState.draggingOffset,
                         strokeWidth = BasePatternDrawingUiState.LINE_STROKE_WIDTH
                     )
                 }
@@ -230,7 +236,7 @@ fun ColumnScope.BasePatternScreen(
                     )
 
                     drawCircle(
-                        color = basePatternDrawingUiState.value.getDotColor(
+                        color = uiState.getDotColor(
                             rowIndex = rowIndex,
                             colIndex = colIndex,
                             selectedDotColor = selectedDotColor,
@@ -245,16 +251,16 @@ fun ColumnScope.BasePatternScreen(
                     )
                 }
 
-                basePatternDrawingUiState.value.threeByThreeDotOffsets[rowIndex] = rowDotPositions
+                uiState.threeByThreeDotOffsets[rowIndex] = rowDotPositions
 
             }
 
-            repeat(basePatternDrawingUiState.value.lineOffsets.size) { lineIndex ->
-                if (basePatternDrawingUiState.value.lineOffsets[lineIndex].first != Offset.Zero) {
+            repeat(uiState.lineOffsets.size) { lineIndex ->
+                if (uiState.lineOffsets[lineIndex].first != Offset.Zero) {
                     drawLine(
                         color = lineColor,
-                        start = basePatternDrawingUiState.value.lineOffsets[lineIndex].first,
-                        end = basePatternDrawingUiState.value.lineOffsets[lineIndex].second,
+                        start = uiState.lineOffsets[lineIndex].first,
+                        end = uiState.lineOffsets[lineIndex].second,
                         strokeWidth = BasePatternDrawingUiState.LINE_STROKE_WIDTH
                     )
                 }
@@ -266,22 +272,35 @@ private fun Offset.is80DpCloserThan(target: Offset): Boolean =
     abs(this.x - target.x).dp <= BasePatternDrawingUiState.DOT_RADIUS * 8 &&
             abs(this.y - target.y).dp <= BasePatternDrawingUiState.DOT_RADIUS * 8
 
-private fun MutableState<BasePatternDrawingUiState>.drawDotAndLine(destinationOffset: Offset) {
-    this.value = this.value.copy(
-        lineOffsets = this.value.lineOffsets.apply { add(element =
-        Pair(
-            first = this@drawDotAndLine.value.latestSelectedDotOffset,
-            second = destinationOffset)
-        ) },
-        selectedOffsets = this.value.selectedOffsets.apply { add(element = destinationOffset) },
-        latestSelectedDotOffset = destinationOffset
+private fun drawDotAndLine(
+    currentUiState: BasePatternDrawingUiState,
+    destinationOffset: Offset,
+    onDrawSuccess: (BasePatternDrawingUiState) -> Unit
+) {
+    onDrawSuccess(
+        currentUiState.copy(
+            lineOffsets = currentUiState.lineOffsets.apply {
+                add(
+                    Pair(
+                        first = currentUiState.latestSelectedDotOffset,
+                        second = destinationOffset)
+                )
+            },
+            selectedOffsets = currentUiState.selectedOffsets.apply { add(destinationOffset) },
+            latestSelectedDotOffset = destinationOffset
+        ),
+
     )
 }
 
-private fun MutableState<BasePatternDrawingUiState>.savePassword(password: Int) {
-    this.value = this.value.copy(
-        password = this.value.password.apply {
-            add(element = password)
-        }
+private fun savePassword(
+    currentUiState: BasePatternDrawingUiState,
+    password: Int,
+    onDrawSuccess: (BasePatternDrawingUiState) -> Unit
+) {
+    onDrawSuccess(
+        currentUiState.copy(
+            password = currentUiState.password.apply { add(password) }
+        )
     )
 }
