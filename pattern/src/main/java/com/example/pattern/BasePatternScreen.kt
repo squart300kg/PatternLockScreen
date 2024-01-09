@@ -69,12 +69,6 @@ fun ColumnScope.BasePatternScreen(
     modifier: Modifier = Modifier,
     context: Context = LocalContext.current,
     drawingSetting: DrawingSetting = DrawingSetting(),
-//    dotSize: Dp = 10.dp,
-//    lineWidth: Dp = 10.dp,
-//    lineColor: Color = colorResource(id = R.color.line),
-//    selectedDotColor: Color = colorResource(id = R.color.selected_dot),
-//    unselectedDotColor: Color = colorResource(id = R.color.unselected_dot),
-//    minimumLineConnectionCount: Int = 2,
     onLessCountPatternSelected: (Int) -> Unit,
     onPatternSuccessfullySelected: (String) -> Unit) {
 
