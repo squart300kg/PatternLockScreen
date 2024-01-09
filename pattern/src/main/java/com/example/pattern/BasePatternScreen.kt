@@ -2,7 +2,6 @@ package com.example.pattern
 
 import android.content.Context
 import android.view.MotionEvent
-import androidx.annotation.ColorRes
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.size
@@ -18,6 +17,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import kotlin.math.abs
 
@@ -34,11 +34,16 @@ data class BasePatternDrawingUiState(
     val password: MutableList<Int> = mutableListOf()
 ) {
 
-    fun getDotColor(rowIndex: Int, colIndex: Int): Int =
+    fun getDotColor(
+        rowIndex: Int,
+        colIndex: Int,
+        selectedDotColor: Color,
+        unselectedDotColor: Color
+    ): Color =
         if (selectedOffsets.contains(threeByThreeDotOffsets[rowIndex][colIndex])) {
-            R.color.pattern_dot_select
+            selectedDotColor
         } else {
-            R.color.pattern_dot_unselect
+            unselectedDotColor
         }
 
     companion object {
@@ -54,12 +59,12 @@ data class BasePatternDrawingUiState(
 fun ColumnScope.BasePatternScreen(
     modifier: Modifier = Modifier,
     context: Context = LocalContext.current,
-    @ColorRes dotSelectedColor: Int = R.color.pattern_dot_select,
-    @ColorRes dotUnselectedColor: Int = R.color.pattern_dot_unselect,
-    @ColorRes lineSelectedColor: Int = R.color.line_dot_select,
-    @ColorRes lineUnselectedColor: Int = R.color.line_dot_unselect,
+    selectedDotColor: Color = colorResource(id = R.color.selected_dot),
+    unselectedDotColor: Color = colorResource(id = R.color.unselected_dot),
+    lineColor: Color = colorResource(id = R.color.line),
     minimumLineConnectionCount: Int = 2,
-    onPatternInput: (String) -> Unit) {
+    onLessCountPatternSelected: (Int) -> Unit,
+    onPatternSuccessfullySelected: (String) -> Unit) {
 
     val basePatternDrawingUiState = remember { mutableStateOf( BasePatternDrawingUiState()) }
 
@@ -116,6 +121,7 @@ fun ColumnScope.BasePatternScreen(
                                 }
                             }
                         }
+
                         MotionEvent.ACTION_MOVE -> {
                             basePatternDrawingUiState.value =
                                 basePatternDrawingUiState.value.copy(
@@ -180,12 +186,14 @@ fun ColumnScope.BasePatternScreen(
                             }
                         }
                         MotionEvent.ACTION_UP -> {
-                            if (basePatternDrawingUiState.value.selectedOffsets.size >= 4) {
-                                onPatternInput(
+                            if (basePatternDrawingUiState.value.selectedOffsets.size >= minimumLineConnectionCount + 1) {
+                                onPatternSuccessfullySelected(
                                     basePatternDrawingUiState.value.password
                                         .toMutableList()
                                         .joinToString("")
                                 )
+                            } else {
+                                onLessCountPatternSelected(minimumLineConnectionCount)
                             }
 
                             basePatternDrawingUiState.value =
@@ -200,7 +208,7 @@ fun ColumnScope.BasePatternScreen(
                 drawContent()
                 if (basePatternDrawingUiState.value.latestSelectedDotOffset != Offset.Zero) {
                     drawLine(
-                        color = Color(context.getColor(R.color.pattern_dot_select)),
+                        color = lineColor,
                         start = basePatternDrawingUiState.value.latestSelectedDotOffset,
                         end = basePatternDrawingUiState.value.draggingOffset,
                         strokeWidth = BasePatternDrawingUiState.LINE_STROKE_WIDTH
@@ -222,9 +230,11 @@ fun ColumnScope.BasePatternScreen(
                     )
 
                     drawCircle(
-                        color = Color(context.getColor(basePatternDrawingUiState.value.getDotColor(
+                        color = basePatternDrawingUiState.value.getDotColor(
                             rowIndex = rowIndex,
-                            colIndex = colIndex))),
+                            colIndex = colIndex,
+                            selectedDotColor = selectedDotColor,
+                            unselectedDotColor = unselectedDotColor),
                         center = colPosition,
                         radius = BasePatternDrawingUiState.DOT_RADIUS.toPx()
                     )
@@ -242,7 +252,7 @@ fun ColumnScope.BasePatternScreen(
             repeat(basePatternDrawingUiState.value.lineOffsets.size) { lineIndex ->
                 if (basePatternDrawingUiState.value.lineOffsets[lineIndex].first != Offset.Zero) {
                     drawLine(
-                        color = Color(context.getColor(R.color.pattern_dot_select)),
+                        color = lineColor,
                         start = basePatternDrawingUiState.value.lineOffsets[lineIndex].first,
                         end = basePatternDrawingUiState.value.lineOffsets[lineIndex].second,
                         strokeWidth = BasePatternDrawingUiState.LINE_STROKE_WIDTH

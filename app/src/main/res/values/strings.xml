@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">PatternScreenSampleProjectr</string>
+    <string name="patternSuccessfullySelectedGuide">Selected Pattern is success : %s</string>
+    <string name="lessPatternSelectedGuide">Please select at least %1$d pattern lines</string>
 </resources>
