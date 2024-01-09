@@ -19,15 +19,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlin.math.abs
 
 private typealias RowDotOffsets = MutableList<Offset>
 private typealias LineOffset = Pair<Offset, Offset>
 data class BasePatternDrawingUiState(
-    val threeByThreeDotOffsets: MutableList<RowDotOffsets> = MutableList(DOT_SIZE) { MutableList(
-        DOT_SIZE
-    ) { Offset.Zero} },
+    val threeByThreeDotOffsets: MutableList<RowDotOffsets> =
+        MutableList(DOT_SIZE) { MutableList(DOT_SIZE) { Offset.Zero} },
     val lineOffsets: MutableList<LineOffset> = mutableListOf(),
     val latestSelectedDotOffset: Offset = Offset.Zero,
     val draggingOffset: Offset = Offset.Zero,
@@ -48,10 +48,10 @@ data class BasePatternDrawingUiState(
         }
 
     companion object {
-        val DOT_RADIUS = 10.dp
-        const val DOT_SIZE = 3
-        const val LINE_STROKE_WIDTH = 9f
-        const val VIBRATOR_MILLS = 20L
+//        internal val DOT_RADIUS = 10.dp
+        internal const val DOT_SIZE = 3
+        internal const val LINE_STROKE_WIDTH = 9f
+        internal const val VIBRATOR_MILLS = 20L
     }
 }
 
@@ -60,6 +60,7 @@ data class BasePatternDrawingUiState(
 fun ColumnScope.BasePatternScreen(
     modifier: Modifier = Modifier,
     context: Context = LocalContext.current,
+    dotSize: Dp = 10.dp,
     selectedDotColor: Color = colorResource(id = R.color.selected_dot),
     unselectedDotColor: Color = colorResource(id = R.color.unselected_dot),
     lineColor: Color = colorResource(id = R.color.line),
@@ -84,8 +85,7 @@ fun ColumnScope.BasePatternScreen(
 
                             repeat(BasePatternDrawingUiState.DOT_SIZE) { rowIndex ->
                                 repeat(BasePatternDrawingUiState.DOT_SIZE) { colIndex ->
-                                    val dotOffset =
-                                        uiState.threeByThreeDotOffsets[rowIndex][colIndex]
+                                    val dotOffset = uiState.threeByThreeDotOffsets[rowIndex][colIndex]
                                     if (firstTabOffset.is80DpCloserThan(dotOffset)) {
 
                                         CommonUtil.vibrate(
@@ -242,7 +242,7 @@ fun ColumnScope.BasePatternScreen(
                             selectedDotColor = selectedDotColor,
                             unselectedDotColor = unselectedDotColor),
                         center = colPosition,
-                        radius = BasePatternDrawingUiState.DOT_RADIUS.toPx()
+                        radius = dotSize.toPx()
                     )
 
                     rowDotPositions.add(
@@ -268,9 +268,12 @@ fun ColumnScope.BasePatternScreen(
         })
 }
 
-private fun Offset.is80DpCloserThan(target: Offset): Boolean =
-    abs(this.x - target.x).dp <= BasePatternDrawingUiState.DOT_RADIUS * 8 &&
-            abs(this.y - target.y).dp <= BasePatternDrawingUiState.DOT_RADIUS * 8
+private fun Offset.is80DpCloserThan(target: Offset): Boolean {
+    val barrierDot = 10.dp
+    return abs(this.x - target.x).dp <= barrierDot * 8 &&
+           abs(this.y - target.y).dp <= barrierDot * 8
+}
+
 
 private fun drawDotAndLine(
     currentUiState: BasePatternDrawingUiState,

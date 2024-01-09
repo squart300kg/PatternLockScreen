@@ -27,7 +27,8 @@ class MainActivity : ComponentActivity() {
                     Column {
                         Spacer(modifier = Modifier.weight(1f))
                         BasePatternScreen(
-                            modifier = Modifier.size(300.dp),
+                            modifier = Modifier.size(400.dp),
+                            dotSize = 20.dp,
                             lineColor = Color.Cyan,
                             unselectedDotColor = Color.Red,
                             selectedDotColor = Color.Blue,
