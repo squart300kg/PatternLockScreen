@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.pattern.BasePatternScreen
+import com.example.pattern.DrawingSetting
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,12 +29,14 @@ class MainActivity : ComponentActivity() {
                         Spacer(modifier = Modifier.weight(1f))
                         BasePatternScreen(
                             modifier = Modifier.size(400.dp),
-                            dotSize = 10.dp,
-                            lineWidth = 4.dp,
-                            lineColor = Color.Cyan,
-                            unselectedDotColor = Color.Red,
-                            selectedDotColor = Color.Blue,
-                            minimumLineConnectionCount = 3,
+                            drawingSetting = DrawingSetting(
+                                dotSize = 10.dp,
+                                lineWidth = 4.dp,
+                                lineColor = Color.Cyan,
+                                selectedDotColor = Color.Magenta,
+                                unselectedDotColor = Color.Blue,
+                                minimumLineConnectionCount = 3,
+                            ),
                             onLessCountPatternSelected = { selectedCount ->
                                 showToast(getString(R.string.lessPatternSelectedGuide, selectedCount))
                             },

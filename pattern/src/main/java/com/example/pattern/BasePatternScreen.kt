@@ -50,22 +50,31 @@ data class BasePatternDrawingUiState(
 
     companion object {
         internal const val DOT_SIZE = 3
-        internal const val LINE_STROKE_WIDTH = 9f
         internal const val VIBRATOR_MILLS = 20L
     }
 }
+
+data class DrawingSetting(
+    val dotSize: Dp = 10.dp,
+    val lineWidth: Dp = 4.dp,
+    val lineColor: Color = Color.Blue,
+    val selectedDotColor: Color = Color.Blue,
+    val unselectedDotColor: Color = Color.Gray,
+    val minimumLineConnectionCount: Int = 2,
+)
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ColumnScope.BasePatternScreen(
     modifier: Modifier = Modifier,
     context: Context = LocalContext.current,
-    dotSize: Dp = 10.dp,
-    lineWidth: Dp = 10.dp,
-    lineColor: Color = colorResource(id = R.color.line),
-    selectedDotColor: Color = colorResource(id = R.color.selected_dot),
-    unselectedDotColor: Color = colorResource(id = R.color.unselected_dot),
-    minimumLineConnectionCount: Int = 2,
+    drawingSetting: DrawingSetting = DrawingSetting(),
+//    dotSize: Dp = 10.dp,
+//    lineWidth: Dp = 10.dp,
+//    lineColor: Color = colorResource(id = R.color.line),
+//    selectedDotColor: Color = colorResource(id = R.color.selected_dot),
+//    unselectedDotColor: Color = colorResource(id = R.color.unselected_dot),
+//    minimumLineConnectionCount: Int = 2,
     onLessCountPatternSelected: (Int) -> Unit,
     onPatternSuccessfullySelected: (String) -> Unit) {
 
@@ -195,14 +204,14 @@ fun ColumnScope.BasePatternScreen(
                         }
 
                         MotionEvent.ACTION_UP -> {
-                            if (uiState.selectedOffsets.size >= minimumLineConnectionCount + 1) {
+                            if (uiState.selectedOffsets.size >= drawingSetting.minimumLineConnectionCount + 1) {
                                 onPatternSuccessfullySelected(
                                     uiState.password
                                         .toMutableList()
                                         .joinToString("")
                                 )
                             } else {
-                                onLessCountPatternSelected(minimumLineConnectionCount)
+                                onLessCountPatternSelected(drawingSetting.minimumLineConnectionCount)
                             }
 
                             uiState = BasePatternDrawingUiState()
@@ -216,10 +225,10 @@ fun ColumnScope.BasePatternScreen(
                 drawContent()
                 if (uiState.latestSelectedDotOffset != Offset.Zero) {
                     drawLine(
-                        color = lineColor,
+                        color = drawingSetting.lineColor,
                         start = uiState.latestSelectedDotOffset,
                         end = uiState.draggingOffset,
-                        strokeWidth = convertDpToPx(context = context, dp = lineWidth)
+                        strokeWidth = convertDpToPx(context = context, dp = drawingSetting.lineWidth)
                     )
                 }
             },
@@ -241,10 +250,10 @@ fun ColumnScope.BasePatternScreen(
                         color = uiState.getDotColor(
                             rowIndex = rowIndex,
                             colIndex = colIndex,
-                            selectedDotColor = selectedDotColor,
-                            unselectedDotColor = unselectedDotColor),
+                            selectedDotColor = drawingSetting.selectedDotColor,
+                            unselectedDotColor = drawingSetting.unselectedDotColor),
                         center = colPosition,
-                        radius = dotSize.toPx()
+                        radius = drawingSetting.dotSize.toPx()
                     )
 
                     rowDotPositions.add(
@@ -260,10 +269,10 @@ fun ColumnScope.BasePatternScreen(
             repeat(uiState.lineOffsets.size) { lineIndex ->
                 if (uiState.lineOffsets[lineIndex].first != Offset.Zero) {
                     drawLine(
-                        color = lineColor,
+                        color = drawingSetting.lineColor,
                         start = uiState.lineOffsets[lineIndex].first,
                         end = uiState.lineOffsets[lineIndex].second,
-                        strokeWidth = convertDpToPx(context = context, dp = lineWidth)
+                        strokeWidth = convertDpToPx(context = context, dp = drawingSetting.lineWidth)
                     )
                 }
             }
