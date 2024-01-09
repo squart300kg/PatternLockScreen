@@ -6,11 +6,11 @@ plugins {
 
 android {
     namespace = "com.example.patternscreensampleprojectr"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.patternscreensampleprojectr"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
@@ -51,6 +51,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":pattern"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
