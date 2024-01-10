@@ -14,7 +14,7 @@ androidxLifecycleRuntimeCompose = "2.6.1"
 composeMaterial = "1.4.0-beta01"
 
 # plugins
-androidGradlePlugin = "8.1.2"
+androidGradlePlugin = "7.4.0"
 jetbrainsKotlin = "1.8.10"
 
 # libraries and plugins

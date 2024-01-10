@@ -4,6 +4,11 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin)
 }
 
+ext["libraryName"] = "patternLockScreen"
+ext["libraryVersion"] = "1.0.0"
+ext["description"] = "Android Pattern Lock Screen Composable Function"
+ext["url"] = "https://io.github.com/squart300kg/PatternLockScreen/"
+
 android {
     namespace = "com.screen.lock.pattern"
     compileSdk = 34
@@ -31,11 +36,11 @@ android {
         kotlinCompilerExtensionVersion = "1.4.3"
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
 }
 
