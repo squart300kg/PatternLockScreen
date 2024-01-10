@@ -75,7 +75,7 @@ afterEvaluate {
         // Configure maven central repository
         repositories {
             maven {
-                name = "sangyoon"
+                name = "sonatype"
                 setUrl("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
                 credentials {
                     username = getExtraString("ossrhUsername")
@@ -167,11 +167,11 @@ android {
         kotlinCompilerExtensionVersion = "1.4.3"
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "1.8"
     }
 }
 
