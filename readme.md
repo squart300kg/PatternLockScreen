@@ -1,6 +1,8 @@
 ![banner.png](readme-image%2Fbanner.png)
 
+<p align="center">  
 🌻 This library is pattern lock screen with making composable function. this is made by calculating offset of axis x and y.
+</p>
 
 # How to import this library?
 ## 1. copy and past this  into project level `build.gradle.kts`
