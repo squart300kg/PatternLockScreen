@@ -1,4 +1,4 @@
-![img_1.png](img_1.png)
+![img_1.png](banner.png)
 🌻 This library is pattern lock screen with making composable function. this is made by calculating offset of axis x and y.
 
 ## How to import this library?
@@ -54,7 +54,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
 
 - **[Demonstration]**
 
-![img.png](img.png)
+![img.png](default.gif)
 
 > **[Note]** : Default setting is that unselected dot color is blue, selected dot color is pink, dot size is 10dp, line width size is 4dp, pattern line coloe is cyon, minimum line connection count is 3, vibrate time when selecte dot is 20L.
 
