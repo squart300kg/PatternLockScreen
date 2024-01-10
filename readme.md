@@ -1,7 +1,7 @@
 <h1 align="center">Pattern Lock Screen</h1>
 
 <p align="center">  
-🌻 This library is pattern lock screen with making composable function. this is made by calculating offset of axis x and y.
+🌻 This library is pattern lock screen with making composable function. Let's use pattern lock screen without hard making this functionality! just add dependency and composable funtion of `BasePatternScreen`! also this library support customically usage. for example, varite dot color, line color, line width etc... Let's start!
 </p>
 
 ![banner.png](readme-image%2Fbanner.png)
