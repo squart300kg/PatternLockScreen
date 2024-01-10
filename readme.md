@@ -61,7 +61,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
 > **[Note]** : Default setting is that unselected dot color is blue, selected dot color is pink, dot size is 10dp, line width size is 4dp, pattern line coloe is cyon, minimum line connection count is 3, vibrate time when selecte dot is 20L.
 
 # How to handle this customically?
-you can use this library customically by variating the object of `DrawingSetting()`. this object is key of usage by cumomically. Let's see this library's struct.
+you can use this library customically by variating the object of `DrawingSetting()`. this object is the key of usage by cumomically. Let's see this library's struct.
 ```kotlin
 data class DrawingSetting(
     val dotSize: Dp = 10.dp,
@@ -76,15 +76,15 @@ data class DrawingSetting(
 If you read the parameters carefully, you will be able to understand them intuitively. The below table is the parameter description.
 ## 1. Field Description
 
-| filed | type | demonstration |demonstration |
+| filed | type | default value |demonstration |
 |-------|---------------|---------------|--------------|
-|dotSize| Dp |10.dp|circle dot size|
-|lineWidth|Dp|4.dp|line width when drawing between circle dots|
-|lineColor|Color|Color.Blue|line color when drawing|
-|selectedDotColor|Color|Color.Blue|selected dot color when you click the dot|
-|unselectedDotColor|Color|Color.Gray|as default dot colot, unselected dot color.|
-|minimumLineConnectionCount|Int|2|minimum number of line to be drawn|
-|vibrateTime|Long|20L|vibrate time when you selected circle dot |
+|dotSize| Dp | 10.dp         |circle dot size|
+|lineWidth|Dp| 4.dp          |line width when drawing between circle dots|
+|lineColor|Color| Color.Blue    |line color when drawing|
+|selectedDotColor|Color| Color.Blue    |selected dot color when you click the dot|
+|unselectedDotColor|Color| Color.Gray    |as default dot colot, unselected dot color.|
+|minimumLineConnectionCount|Int| 2             |minimum number of line to be drawn|
+|vibrateTime|Long| 20L           |vibrate time when you selected circle dot |
 
 ## 2. The example of usage
 Let’s learn about custom use cases by modifying each field of the drawing object through gif images.
