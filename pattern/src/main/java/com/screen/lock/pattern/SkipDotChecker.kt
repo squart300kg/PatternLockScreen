@@ -1,4 +1,4 @@
-package com.example.pattern
+package com.screen.lock.pattern
 
 import androidx.compose.ui.geometry.Offset
 import kotlin.properties.Delegates

@@ -1,4 +1,4 @@
-package com.example.pattern
+package com.screen.lock.pattern
 
 import android.content.Context
 import android.os.Build

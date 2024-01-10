@@ -1,4 +1,4 @@
-package com.example.patternscreensampleprojectr
+package com.patternlockscreen.composable
 
 import org.junit.Test
 

@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.pattern"
+    namespace = "com.screen.lock.pattern"
     compileSdk = 34
 
     defaultConfig {

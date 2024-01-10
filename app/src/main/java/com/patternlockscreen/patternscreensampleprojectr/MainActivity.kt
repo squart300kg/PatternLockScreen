@@ -1,4 +1,4 @@
-package com.example.patternscreensampleprojectr
+package com.patternlockscreen.patternscreensampleprojectr
 
 import android.os.Bundle
 import android.widget.Toast
@@ -16,8 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.pattern.BasePatternScreen
-import com.example.pattern.DrawingSetting
+import com.example.patternscreensampleprojectr.R
+import com.screen.lock.pattern.BasePatternScreen
+import com.screen.lock.pattern.DrawingSetting
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
