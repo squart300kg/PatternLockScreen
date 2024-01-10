@@ -40,6 +40,7 @@ class MainActivity : ComponentActivity() {
                                 selectedDotColor = Color.Magenta,
                                 unselectedDotColor = Color.Blue,
                                 minimumLineConnectionCount = 3,
+                                vibrateTime = 20L
                             ),
                             onLessCountPatternSelected = { selectedCount ->
                                 showToast(getString(R.string.lessPatternSelectedGuide, selectedCount))

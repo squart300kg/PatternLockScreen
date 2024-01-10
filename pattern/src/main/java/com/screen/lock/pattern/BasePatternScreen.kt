@@ -48,7 +48,6 @@ data class BasePatternDrawingUiState(
 
     companion object {
         internal const val DOT_SIZE = 3
-        internal const val VIBRATOR_MILLS = 20L
     }
 }
 
@@ -59,6 +58,7 @@ data class DrawingSetting(
     val selectedDotColor: Color = Color.Blue,
     val unselectedDotColor: Color = Color.Gray,
     val minimumLineConnectionCount: Int = 2,
+    val vibrateTime: Long = 20L,
 )
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -93,7 +93,7 @@ fun ColumnScope.BasePatternScreen(
 
                                         CommonUtil.vibrate(
                                             context,
-                                            BasePatternDrawingUiState.VIBRATOR_MILLS
+                                            drawingSetting.vibrateTime
                                         )
                                         Offset(
                                             x = dotOffset.x,
@@ -148,7 +148,7 @@ fun ColumnScope.BasePatternScreen(
                                                     if (isMiddleDotNotSelected()) {
                                                         CommonUtil.vibrate(
                                                             context,
-                                                            BasePatternDrawingUiState.VIBRATOR_MILLS
+                                                            drawingSetting.vibrateTime
                                                         )
                                                         drawDotAndLine(
                                                             currentUiState = uiState,
@@ -170,7 +170,7 @@ fun ColumnScope.BasePatternScreen(
 
                                             CommonUtil.vibrate(
                                                 context,
-                                                BasePatternDrawingUiState.VIBRATOR_MILLS
+                                                drawingSetting.vibrateTime
                                             )
                                             drawDotAndLine(
                                                 currentUiState = uiState,
