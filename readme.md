@@ -87,7 +87,7 @@ If you read the parameters carefully, you will be able to understand them intuit
 |vibrateTime|Long| 20L           |vibrate time when you selected circle dot |
 
 ## 2. The example of usage
-Let’s learn about custom use cases by modifying each field of the drawing object through gif images.
+Let’s learn about custom use cases by modifying each field of the `DrawingSetting` object through gif images.
 ### 2.1. customize `lineWidth`
 
 Make the drawing line size smaller or larger
