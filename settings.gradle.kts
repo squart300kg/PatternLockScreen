@@ -15,4 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "PatternScreenSampleProjectr"
 include(":app")
-include(":pattern")
+include(":pattern-lock-screen")

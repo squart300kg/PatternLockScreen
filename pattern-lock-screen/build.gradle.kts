@@ -1,10 +1,25 @@
+import org.jetbrains.kotlin.konan.properties.Properties
+
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.android.library)
+    alias(libs.plugins.jetbrains.kotlin)
+
     id("maven-publish") // 배포를 위한 모듈
     id("signing") // 서명을 위한 모듈
 }
 
-// Stub secrets to let the project sync and build without the publication values set up
+/**
+ * Project Settings
+ */
+ext["libraryName"] = "pattern-lock-screen"
+ext["libraryVersion"] = "1.0.0"
+ext["description"] = "Android Pattern Lock Screen Composable Function"
+ext["url"] = "https://io.github.com/squart300kg/pattern-lock-screen/"
+
+/**
+ * Signing Settings
+ */
 ext["signing.keyId"] = "" // GPG 키를 생성하고 나온 keyId - 5번의 GPG 키 생성 후 local.properties에 등록
 ext["signing.password"] = "" // GPG 키를 생성할 때 적어준 비밀번호 - 5번의 GPG 키 생성 후 local.properties에 등록
 ext["signing.key"] = "" // GPG 키 생성 후 BASE64를 한 키값
@@ -18,13 +33,12 @@ val javadocJar by tasks.registering(Jar::class) {
 
 val androidSourceJar by tasks.registering(Jar::class) {
     archiveClassifier.set("sources")
-    from(android.sourceSets.getByName<AndroidSourceSet>("main").java.srcDirs)
+    from(android.sourceSets.getByName<com.android.build.gradle.api.AndroidSourceSet>("main").java.srcDirs)
 }
 
 fun getExtraString(name: String) = ext[name]?.toString()
 
 fun groupId(): String = "io.github.squart300kg"
-
 
 afterEvaluate {
     // Grabbing secrets from local.properties file or from environment variables, which could be used on CI
@@ -51,7 +65,7 @@ afterEvaluate {
         val artifactName = getExtraString("libraryName") ?: name
         val libraryVersion = getExtraString("libraryVersion") ?: "DEV"
         val artifactDescription = getExtraString("description") ?: ""
-        val artifactUrl: String = getExtraString("url") ?: "http://thdev.tech/"
+        val artifactUrl: String = getExtraString("url") ?: "https://io.github.squart300kg/"
 
         println("artifactName $artifactName")
         println("libraryVersion $libraryVersion")
@@ -124,4 +138,62 @@ afterEvaluate {
         )
         sign(publishing.publications)
     }
+}
+
+android {
+    namespace = "com.screen.lock.pattern"
+    compileSdk = 34
+
+    defaultConfig {
+        minSdk = 21
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
+    }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+    }
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.4.3"
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+}
+
+dependencies {
+
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.ui.preview)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material)
+    implementation(libs.androidx.compose.ui.tooling)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.compose.material)
+    implementation(libs.junit)
+
+    androidTestImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.espresso.core)
 }
