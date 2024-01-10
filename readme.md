@@ -1,3 +1,5 @@
+<h1 align="center">Pattern Lock Screen</h1>
+
 ![banner.png](readme-image%2Fbanner.png)
 
 <p align="center">  
