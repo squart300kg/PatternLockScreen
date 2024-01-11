@@ -132,6 +132,14 @@ Declare the minimum number of line that must be drawn.
 |--|--|--|
 |![default2.gif](readme-image%2Fdefault2.gif)| → |![Alt text](readme-image/minimumConnectionCount.gif)|
 
+### 2.6. customize `dotSize`
+
+Variate the circle dot size what you want
+
+|default setting demonstration| |variate `dotSize` demonstration|
+|--|--|--|
+|![default2.gif](readme-image%2Fdefault2.gif)| → |![Alt text](readme-image/dotSize.gif)|
+
 # License
 ```xml
 Designed and developed by 2024 squart300kg (sangyoon song)
