@@ -51,8 +51,8 @@ android {
 }
 
 dependencies {
-//    implementation(project(":pattern-lock-screen"))
-    implementation("io.github.squart300kg:pattern-lock-screen:1.0.0")
+    implementation(project(":pattern-lock-screen"))
+//    implementation("io.github.squart300kg:pattern-lock-screen:1.0.0")
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
