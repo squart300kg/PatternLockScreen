@@ -21,70 +21,70 @@ import com.screen.lock.pattern.BasePatternScreen
 import com.screen.lock.pattern.DrawingSetting
 
 class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            MaterialTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = Color.White,
-                ) {
-                    Column {
-                        Spacer(modifier = Modifier.weight(1f))
-                        BasePatternScreen(
-                            modifier = Modifier.size(400.dp),
-                            drawingSetting = DrawingSetting(
-                                dotSize = 10.dp,
-                                lineWidth = 4.dp,
-                                lineColor = Color.Cyan,
-                                selectedDotColor = Color.Magenta,
-                                unselectedDotColor = Color.Blue,
-                                minimumLineConnectionCount = 3,
-                                vibrateTime = 20L
-                            ),
-                            onLessCountPatternSelected = { selectedCount ->
-                                showToast(getString(R.string.lessPatternSelectedGuide, selectedCount))
-                            },
-                            onPatternSuccessfullySelected = { result ->
-                                showToast(getString(R.string.patternSuccessfullySelectedGuide, result))
-                            }
-                        )
-                        Spacer(modifier = Modifier.weight(1f))
-                    }
-                }
-            }
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContent {
+      MaterialTheme {
+        Surface(
+          modifier = Modifier.fillMaxSize(),
+          color = Color.White,
+        ) {
+          Column {
+            Spacer(modifier = Modifier.weight(1f))
+            BasePatternScreen(
+              modifier = Modifier.size(400.dp),
+              drawingSetting = DrawingSetting(
+                dotSize = 10.dp,
+                lineWidth = 4.dp,
+                lineColor = Color.Cyan,
+                selectedDotColor = Color.Magenta,
+                unselectedDotColor = Color.Blue,
+                minimumLineConnectionCount = 3,
+                vibrateTime = 20L
+              ),
+              onLessCountPatternSelected = { selectedCount ->
+                showToast(getString(R.string.lessPatternSelectedGuide, selectedCount))
+              },
+              onPatternSuccessfullySelected = { result ->
+                showToast(getString(R.string.patternSuccessfullySelectedGuide, result))
+              }
+            )
+            Spacer(modifier = Modifier.weight(1f))
+          }
         }
+      }
     }
+  }
 }
 
 private fun ComponentActivity.showToast(message: String) {
-    Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+  Toast.makeText(this, message, Toast.LENGTH_LONG).show()
 }
 
 @Preview
 @Composable
 fun PatternPreview() {
 
-    MaterialTheme {
-        Column(
-            modifier = Modifier.background(Color.White)
-        ) {
-            Spacer(modifier = Modifier.weight(1f))
-            BasePatternScreen(
-                modifier = Modifier.size(400.dp),
-                drawingSetting = DrawingSetting(
-                    dotSize = 10.dp,
-                    lineWidth = 4.dp,
-                    lineColor = Color.Cyan,
-                    selectedDotColor = Color.Magenta,
-                    unselectedDotColor = Color.Blue,
-                    minimumLineConnectionCount = 3,
-                ),
-                onLessCountPatternSelected = {  },
-                onPatternSuccessfullySelected = {  }
-            )
-            Spacer(modifier = Modifier.weight(1f))
-        }
+  MaterialTheme {
+    Column(
+      modifier = Modifier.background(Color.White)
+    ) {
+      Spacer(modifier = Modifier.weight(1f))
+      BasePatternScreen(
+        modifier = Modifier.size(400.dp),
+        drawingSetting = DrawingSetting(
+          dotSize = 10.dp,
+          lineWidth = 4.dp,
+          lineColor = Color.Cyan,
+          selectedDotColor = Color.Magenta,
+          unselectedDotColor = Color.Blue,
+          minimumLineConnectionCount = 3,
+        ),
+        onLessCountPatternSelected = { },
+        onPatternSuccessfullySelected = { }
+      )
+      Spacer(modifier = Modifier.weight(1f))
     }
+  }
 
 }
