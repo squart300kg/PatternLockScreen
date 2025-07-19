@@ -13,7 +13,7 @@ plugins {
  * Project Settings
  */
 ext["libraryName"] = "pattern-lock-screen"
-ext["libraryVersion"] = "1.0.0"
+ext["libraryVersion"] = "1.0.1"
 ext["description"] = "Android Pattern Lock Screen Composable Function"
 ext["url"] = "https://io.github.com/squart300kg/pattern-lock-screen/"
 
