@@ -76,156 +76,156 @@ fun ColumnScope.BasePatternScreen(
 
   Canvas(
     modifier = modifier
-        .size(264.dp)
-        .align(Alignment.CenterHorizontally)
-        .pointerInteropFilter(
-            onTouchEvent = { motionEvent ->
-                when (motionEvent.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        val firstTabOffset = Offset(
-                            x = motionEvent.x,
-                            y = motionEvent.y
+      .size(264.dp)
+      .align(Alignment.CenterHorizontally)
+      .pointerInteropFilter(
+        onTouchEvent = { motionEvent ->
+          when (motionEvent.action) {
+            MotionEvent.ACTION_DOWN -> {
+              val firstTabOffset = Offset(
+                x = motionEvent.x,
+                y = motionEvent.y
+              )
+
+              repeat(BasePatternDrawingUiState.DOT_SIZE) { rowIndex ->
+                repeat(BasePatternDrawingUiState.DOT_SIZE) { colIndex ->
+                  val dotOffset =
+                    uiState.threeByThreeDotOffsets[rowIndex][colIndex]
+                  if (firstTabOffset.is80DpCloserThan(dotOffset)) {
+
+                    CommonUtil.vibrate(
+                      context,
+                      drawingSetting.vibrateTime
+                    )
+                    Offset(
+                      x = dotOffset.x,
+                      y = dotOffset.y
+                    ).let { firstSelectedOffset ->
+                      uiState =
+                        uiState.copy(
+                          selectedOffsets = uiState.selectedOffsets.apply {
+                            add(firstSelectedOffset)
+                          },
+                          latestSelectedDotOffset = firstSelectedOffset,
+                          draggingOffset = firstSelectedOffset,
+                          password = uiState.password.apply {
+                            add(
+                              element = getPasswordByDotOffsetIndex(
+                                rowIndex = rowIndex,
+                                colIndex = colIndex
+                              )
+                            )
+                          }
                         )
-
-                        repeat(BasePatternDrawingUiState.DOT_SIZE) { rowIndex ->
-                            repeat(BasePatternDrawingUiState.DOT_SIZE) { colIndex ->
-                                val dotOffset =
-                                    uiState.threeByThreeDotOffsets[rowIndex][colIndex]
-                                if (firstTabOffset.is80DpCloserThan(dotOffset)) {
-
-                                    CommonUtil.vibrate(
-                                        context,
-                                        drawingSetting.vibrateTime
-                                    )
-                                    Offset(
-                                        x = dotOffset.x,
-                                        y = dotOffset.y
-                                    ).let { firstSelectedOffset ->
-                                        uiState =
-                                            uiState.copy(
-                                                selectedOffsets = uiState.selectedOffsets.apply {
-                                                    add(firstSelectedOffset)
-                                                },
-                                                latestSelectedDotOffset = firstSelectedOffset,
-                                                draggingOffset = firstSelectedOffset,
-                                                password = uiState.password.apply {
-                                                    add(
-                                                        element = getPasswordByDotOffsetIndex(
-                                                            rowIndex = rowIndex,
-                                                            colIndex = colIndex
-                                                        )
-                                                    )
-                                                }
-                                            )
-                                    }
-                                }
-                            }
-                        }
                     }
-
-                    MotionEvent.ACTION_MOVE -> {
-                        uiState =
-                            uiState.copy(
-                                draggingOffset = Offset(
-                                    x = motionEvent.x,
-                                    y = motionEvent.y
-                                )
-                            )
-
-                        repeat(BasePatternDrawingUiState.DOT_SIZE) { rowDotIndex ->
-                            repeat(BasePatternDrawingUiState.DOT_SIZE) { colDotIndex ->
-                                val dotOffset =
-                                    uiState.threeByThreeDotOffsets[rowDotIndex][colDotIndex]
-
-                                if (uiState.draggingOffset.is80DpCloserThan(dotOffset)) {
-
-                                    if (!uiState.selectedOffsets.contains(dotOffset)) {
-
-                                        SkipDotChecker(
-                                            rowDotIndex = rowDotIndex,
-                                            colDotIndex = colDotIndex,
-                                            targetUiModel = uiState
-                                        ).run {
-                                            if (isSkippedMiddleDot()) {
-                                                if (isMiddleDotNotSelected()) {
-                                                    CommonUtil.vibrate(
-                                                        context,
-                                                        drawingSetting.vibrateTime
-                                                    )
-                                                    drawDotAndLine(
-                                                        currentUiState = uiState,
-                                                        destinationOffset = middleOffset,
-                                                        onDrawSuccess = { newUiState ->
-                                                            uiState = newUiState
-                                                        }
-                                                    )
-                                                    savePassword(
-                                                        currentUiState = uiState,
-                                                        password = password,
-                                                        onDrawSuccess = { newUiState ->
-                                                            uiState = newUiState
-                                                        }
-                                                    )
-                                                }
-                                            }
-                                        }
-
-                                        CommonUtil.vibrate(
-                                            context,
-                                            drawingSetting.vibrateTime
-                                        )
-                                        drawDotAndLine(
-                                            currentUiState = uiState,
-                                            destinationOffset = dotOffset,
-                                            onDrawSuccess = { newUiState ->
-                                                uiState = newUiState
-                                            }
-                                        )
-                                        savePassword(
-                                            currentUiState = uiState,
-                                            password = getPasswordByDotOffsetIndex(
-                                                rowIndex = rowDotIndex,
-                                                colIndex = colDotIndex
-                                            ),
-                                            onDrawSuccess = { newUiState ->
-                                                uiState = newUiState
-                                            }
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    MotionEvent.ACTION_UP -> {
-                        if (uiState.selectedOffsets.size >= drawingSetting.minimumLineConnectionCount + 1) {
-                            onPatternSuccessfullySelected(
-                                uiState.password
-                                    .toMutableList()
-                                    .joinToString("")
-                            )
-                        } else {
-                            onLessCountPatternSelected(drawingSetting.minimumLineConnectionCount)
-                        }
-
-                        uiState = BasePatternDrawingUiState()
-
-                    }
+                  }
                 }
-                true
+              }
             }
-        )
-        .drawWithContent {
-            drawContent()
-            if (uiState.latestSelectedDotOffset != Offset.Zero) {
-                drawLine(
-                    color = drawingSetting.lineColor,
-                    start = uiState.latestSelectedDotOffset,
-                    end = uiState.draggingOffset,
-                    strokeWidth = convertDpToPx(context = context, dp = drawingSetting.lineWidth)
+
+            MotionEvent.ACTION_MOVE -> {
+              uiState =
+                uiState.copy(
+                  draggingOffset = Offset(
+                    x = motionEvent.x,
+                    y = motionEvent.y
+                  )
                 )
+
+              repeat(BasePatternDrawingUiState.DOT_SIZE) { rowDotIndex ->
+                repeat(BasePatternDrawingUiState.DOT_SIZE) { colDotIndex ->
+                  val dotOffset =
+                    uiState.threeByThreeDotOffsets[rowDotIndex][colDotIndex]
+
+                  if (uiState.draggingOffset.is80DpCloserThan(dotOffset)) {
+
+                    if (!uiState.selectedOffsets.contains(dotOffset)) {
+
+                      SkipDotChecker(
+                        rowDotIndex = rowDotIndex,
+                        colDotIndex = colDotIndex,
+                        targetUiModel = uiState
+                      ).run {
+                        if (isSkippedMiddleDot()) {
+                          if (isMiddleDotNotSelected()) {
+                            CommonUtil.vibrate(
+                              context,
+                              drawingSetting.vibrateTime
+                            )
+                            drawDotAndLine(
+                              currentUiState = uiState,
+                              destinationOffset = middleOffset,
+                              onDrawSuccess = { newUiState ->
+                                uiState = newUiState
+                              }
+                            )
+                            savePassword(
+                              currentUiState = uiState,
+                              password = password,
+                              onDrawSuccess = { newUiState ->
+                                uiState = newUiState
+                              }
+                            )
+                          }
+                        }
+                      }
+
+                      CommonUtil.vibrate(
+                        context,
+                        drawingSetting.vibrateTime
+                      )
+                      drawDotAndLine(
+                        currentUiState = uiState,
+                        destinationOffset = dotOffset,
+                        onDrawSuccess = { newUiState ->
+                          uiState = newUiState
+                        }
+                      )
+                      savePassword(
+                        currentUiState = uiState,
+                        password = getPasswordByDotOffsetIndex(
+                          rowIndex = rowDotIndex,
+                          colIndex = colDotIndex
+                        ),
+                        onDrawSuccess = { newUiState ->
+                          uiState = newUiState
+                        }
+                      )
+                    }
+                  }
+                }
+              }
             }
-        },
+
+            MotionEvent.ACTION_UP -> {
+              if (uiState.selectedOffsets.size >= drawingSetting.minimumLineConnectionCount + 1) {
+                onPatternSuccessfullySelected(
+                  uiState.password
+                    .toMutableList()
+                    .joinToString("")
+                )
+              } else {
+                onLessCountPatternSelected(drawingSetting.minimumLineConnectionCount)
+              }
+
+              uiState = BasePatternDrawingUiState()
+
+            }
+          }
+          true
+        }
+      )
+      .drawWithContent {
+        drawContent()
+        if (uiState.latestSelectedDotOffset != Offset.Zero) {
+          drawLine(
+            color = drawingSetting.lineColor,
+            start = uiState.latestSelectedDotOffset,
+            end = uiState.draggingOffset,
+            strokeWidth = convertDpToPx(context = context, dp = drawingSetting.lineWidth)
+          )
+        }
+      },
     onDraw = {
       val dotHorizontalMargin = size.width / 6
       val dotVerticalMargin = size.height / 6
