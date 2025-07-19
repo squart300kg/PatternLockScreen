@@ -64,7 +64,7 @@ data class DrawingSetting(
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun ColumnScope.BasePatternScreen(
+fun BasePatternScreen(
   modifier: Modifier = Modifier,
   context: Context = LocalContext.current,
   drawingSetting: DrawingSetting = DrawingSetting(),
@@ -77,7 +77,6 @@ fun ColumnScope.BasePatternScreen(
   Canvas(
     modifier = modifier
       .size(264.dp)
-      .align(Alignment.CenterHorizontally)
       .pointerInteropFilter(
         onTouchEvent = { motionEvent ->
           when (motionEvent.action) {

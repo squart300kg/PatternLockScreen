@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,7 +33,9 @@ class MainActivity : ComponentActivity() {
           Column {
             Spacer(modifier = Modifier.weight(1f))
             BasePatternScreen(
-              modifier = Modifier.size(400.dp),
+              modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .size(400.dp),
               drawingSetting = DrawingSetting(
                 dotSize = 10.dp,
                 lineWidth = 4.dp,
